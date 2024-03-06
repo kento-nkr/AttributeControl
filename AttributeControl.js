@@ -47,7 +47,7 @@ class AttributeControl
         });
     }
 
-    #set(fieldcode, attribute_type, attribute)
+    set(fieldcode, attribute_type, attribute)
     {
         try
         {
