@@ -38,7 +38,7 @@ class AttributeControl
             Object.keys(attributeList_obj).forEach((attribute_type) =>
             {
                 //各attributeに対して
-                this.#set(
+                this.set(
                     fieldcode,
                     attribute_type,
                     attributeList_obj[attribute_type]
@@ -76,6 +76,25 @@ class AttributeControl
         {
             console.error(`get_element error:\n fieldcode=${fieldcode}\n detail=${e}`);
         }
+    }
+
+    update_datalist(datalist_id, dataObject)
+    {
+        // dataObject = [{name:???, code:???},]
+        if (document.getElementById(datalist_id)) document.getElementById(datalist_id).remove()
+        const new_datalist = document.createElement("datalist");
+        new_datalist.id = datalist_id;
+        dataObject.forEach((obj) =>
+        {
+            const newOption = document.createElement("option");
+            newOption.value = obj.name;
+            if (obj.code === "")
+                newOption.label = `${obj.name}`;
+            else
+                newOption.label = `(${obj.code}) ${obj.name}`;
+            new_datalist.appendChild(newOption);
+        });
+        document.body.appendChild(new_datalist)
     }
 
 }
