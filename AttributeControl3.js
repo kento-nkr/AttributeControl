@@ -19,8 +19,7 @@
     };
     setAttributeByObject(autocompleteList_obj);
 
-    >>フィールドコード＝メールアドレスにemailの自動入力属性を付与
-    >>フィールドコード＝姓にfamily-nameの自動入力属性を付与
+
     ...
 */
 class AttributeControl
@@ -80,18 +79,18 @@ class AttributeControl
 
     update_datalist(datalist_id, dataObject)
     {
-        // dataObject = [{name:???, code:???},]
+        // dataObject = [{value:???, code:???},]
         if (document.getElementById(datalist_id)) document.getElementById(datalist_id).remove()
         const new_datalist = document.createElement("datalist");
         new_datalist.id = datalist_id;
         dataObject.forEach((obj) =>
         {
             const newOption = document.createElement("option");
-            newOption.value = obj.name;
+            newOption.value = obj.value;
             if (obj.code === "")
-                newOption.label = `${obj.name}`;
+                newOption.label = `${obj.value}`;
             else
-                newOption.label = `(${obj.code}) ${obj.name}`;
+                newOption.label = `${obj.value}(${obj.code})`;
             new_datalist.appendChild(newOption);
         });
         document.body.appendChild(new_datalist)
