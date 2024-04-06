@@ -60,7 +60,9 @@
         ```js
         { value: "女性", code: "" }
         ```
-    - `code`を設定した場合、プルダウンには`value (code)`の形式で表示される
+    - `code`を設定した場合、プルダウンには`value (code)`の形式で表示される  
+       ![image](https://github.com/kento-nkr/AttributeControl/assets/127807502/1270e678-bfca-48e3-8833-071bc39886a2)
+
 
 
 ## サンプルプログラム
