@@ -1,5 +1,10 @@
 # AttributeControl
 
+## CDN
+```url
+https://cdn.jsdelivr.net/gh/kento-nkr/AttributeControl/AttributeControl.js
+```
+
 ## 使い方
 
 1. **クラスのインスタンス化**
