@@ -88,9 +88,9 @@ class AttributeControl
             const newOption = document.createElement("option");
             newOption.value = obj.value;
             if (obj.code === "")
-                newOption.label = `${obj.value}`;
+                newOption.label = "";
             else
-                newOption.label = `${obj.value}(${obj.code})`;
+                newOption.label = `(${obj.code})`;
             new_datalist.appendChild(newOption);
         });
         document.body.appendChild(new_datalist)
