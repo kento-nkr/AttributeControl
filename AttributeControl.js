@@ -96,5 +96,77 @@ class AttributeControl
         document.body.appendChild(new_datalist)
     }
 
+    update_checkbox(fieldcode, dataObject)
+    {
+        // dataObject = [{value:???, code:???},]
+        const targetElement = this.#get_element_byfieldcode(fieldcode);
+        if (document.getElementById(fieldcode)) document.getElementById(checkbox_id).remove()
+        const new_div = document.createElement("div");
+        new_div.id = fieldcode;
+        new_div.style.display = "none";
+        new_div.style.position = "absolute";
+        new_div.style.background = "white";
+        new_div.style.border = "1px solid #ccc";
+        new_div.style["box-shadow"] = "0 2px 8px rgba(0, 0, 0, 0.15)";
+        new_div.style["z-index"] = "1000";
+        new_div.style["border-radius"] = ".25em";
+        dataObject.forEach((obj) => 
+        {
+            if (!obj.value) return;
+            const checkboxWrapper = document.createElement("div");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = obj.value;
+            checkbox.style["border-radius"] = ".25em";
+            const label = document.createElement("label");
+            label.innerText = obj.code ? `(${obj.code}) ${obj.value}` : obj.value;
+            checkbox.addEventListener('change', () => {
+                const checkboxes = document.getElementById(fieldcode).childNodes;
+                let checkedValues = []
+                for (let i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].getElementsByTagName("input")[0].checked) {
+                        checkedValues.push(checkboxes[i].getElementsByTagName("input")[0].value)
+                    }
+                }
+                targetElement.value = checkedValues.join(', ');
+            });
+            checkboxWrapper.appendChild(checkbox);
+            checkboxWrapper.appendChild(label);
+            new_div.appendChild(checkboxWrapper);
+        });
+        targetElement.after(new_div)
+
+        targetElement.addEventListener('focus', function() {
+            new_div.style.display = 'block';
+        });
+    
+        document.addEventListener('click', function(event) {
+            if (!targetElement.contains(event.target) && !new_div.contains(event.target)) {
+                new_div.style.display = 'none';
+            }
+        });
+    }
+
+    // ドロップダウンやチェックボックスの項目以外の入力を拒否
+    update_limitation(fieldcode, dataObject) {
+        // dataObject = [{value:???, code:???},]
+        const list = dataObject.map(item => item.value); // valueのみの配列に変換
+        const targetElement = this.#get_element_byfieldcode(fieldcode);
+        targetElement.addEventListener("input", (event) => {
+            let flag = false;
+            const parts = event.target.value.split(',').map(part => part.trim()); // 入力されている文字列を","区切りで配列に保管
+            // 保管されている配列に一致するものがあるかチェック
+            for (let part of parts) {
+                if (!list.includes(part)) {
+                    flag = true;
+                }
+            }
+            // ない場合入力文字列をクリア
+            if (flag) {
+              event.target.value = "";
+            }
+        });
+    }
+    
 }
 
