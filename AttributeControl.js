@@ -100,7 +100,7 @@ class AttributeControl
     {
         // dataObject = [{value:???, code:???},]
         const targetElement = this.#get_element_byfieldcode(fieldcode);
-        if (document.getElementById(fieldcode)) document.getElementById(checkbox_id).remove()
+        if (document.getElementById(fieldcode)) document.getElementById(fieldcode).remove()
         const new_div = document.createElement("div");
         new_div.id = fieldcode;
         new_div.style.display = "none";
