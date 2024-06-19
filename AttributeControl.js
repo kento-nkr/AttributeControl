@@ -96,8 +96,7 @@ class AttributeControl
         document.body.appendChild(new_datalist)
     }
 
-    update_checkbox(fieldcode, dataObject)
-    {
+    update_checkbox(fieldcode, dataObject) {
         // dataObject = [{value:???, code:???},]
         const targetElement = this.#get_element_byfieldcode(fieldcode);
         if (document.getElementById(fieldcode)) document.getElementById(fieldcode).remove()
@@ -107,35 +106,49 @@ class AttributeControl
         new_div.style.position = "absolute";
         new_div.style.background = "white";
         new_div.style.border = "1px solid #ccc";
-        new_div.style["box-shadow"] = "0 2px 8px rgba(0, 0, 0, 0.15)";
-        new_div.style["z-index"] = "1000";
-        new_div.style["border-radius"] = ".25em";
-        dataObject.forEach((obj) => 
-        {
+        new_div.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.15)";
+        new_div.style.zIndex = "1000";
+        new_div.style.borderRadius = ".25em";
+    
+        dataObject.forEach((obj, index) => {
             if (!obj.value) return;
             const checkboxWrapper = document.createElement("div");
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
+            checkbox.id = `checkbox-${fieldcode}-${index}`;
             checkbox.value = obj.value;
-            checkbox.style["border-radius"] = ".25em";
+            checkbox.style.borderRadius = ".25em";
+    
             const label = document.createElement("label");
+            label.htmlFor = checkbox.id;
             label.innerText = obj.code ? `(${obj.code}) ${obj.value}` : obj.value;
-            checkbox.addEventListener('change', () => {
-                const checkboxes = document.getElementById(fieldcode).childNodes;
-                let checkedValues = []
-                for (let i = 0; i < checkboxes.length; i++) {
-                    if (checkboxes[i].getElementsByTagName("input")[0].checked) {
-                        checkedValues.push(checkboxes[i].getElementsByTagName("input")[0].value)
-                    }
-                }
-                targetElement.value = checkedValues.join(', ');
+ぽいんたぽいんた
+            checkbox.addEventListener('change', updateCheckedValues);
+            label.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                checkbox.checked = !checkbox.checked;
+                updateCheckedValues();
             });
+    
             checkboxWrapper.appendChild(checkbox);
             checkboxWrapper.appendChild(label);
             new_div.appendChild(checkboxWrapper);
         });
-        targetElement.after(new_div)
-
+    
+        function updateCheckedValues() {
+            const checkboxes = document.getElementById(fieldcode).childNodes;
+            let checkedValues = []
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].getElementsByTagName("input")[0].checked) {
+                    checkedValues.push(checkboxes[i].getElementsByTagName("input")[0].value)
+                }
+            }
+            targetElement.value = checkedValues.join(', ');
+        }
+    
+        targetElement.after(new_div);
+    
         targetElement.addEventListener('focus', function() {
             new_div.style.display = 'block';
         });
@@ -146,7 +159,7 @@ class AttributeControl
             }
         });
     }
-
+    
     // ドロップダウンやチェックボックスの項目以外の入力を拒否
     update_limitation(fieldcode, dataObject) {
         // dataObject = [{value:???, code:???},]
