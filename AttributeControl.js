@@ -181,5 +181,10 @@ class AttributeControl
         });
     }
     
+    // チェックボックスにのみ有効
+    update_readOnly(fieldcode) {
+        const targetElement = this.#get_element_byfieldcode(fieldcode);
+        targetElement.readOnly = true;
+    }
 }
 
