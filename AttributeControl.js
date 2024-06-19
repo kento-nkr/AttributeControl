@@ -122,7 +122,7 @@ class AttributeControl
             const label = document.createElement("label");
             label.htmlFor = checkbox.id;
             label.innerText = obj.code ? `(${obj.code}) ${obj.value}` : obj.value;
-ぽいんたぽいんた
+            
             checkbox.addEventListener('change', updateCheckedValues);
             label.addEventListener('click', (event) => {
                 event.preventDefault();
