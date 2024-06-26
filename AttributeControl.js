@@ -22,20 +22,15 @@
 
     ...
 */
-class AttributeControl
-{
-    constructor()
-    { }
+class AttributeControl {
+    constructor() { }
 
     // autocompleteList_obj = {fieldcode : {attribute_type : attribute},}
-    setAttribute(autocompleteList_obj)
-    {
-        Object.keys(autocompleteList_obj).forEach((fieldcode) =>
-        {
+    setAttribute(autocompleteList_obj) {
+        Object.keys(autocompleteList_obj).forEach((fieldcode) => {
             //各autocompleteList_objに対して
             const attributeList_obj = autocompleteList_obj[fieldcode];
-            Object.keys(attributeList_obj).forEach((attribute_type) =>
-            {
+            Object.keys(attributeList_obj).forEach((attribute_type) => {
                 //各attributeに対して
                 this.set(
                     fieldcode,
@@ -46,24 +41,19 @@ class AttributeControl
         });
     }
 
-    set(fieldcode, attribute_type, attribute)
-    {
-        try
-        {
+    set(fieldcode, attribute_type, attribute) {
+        try {
             const targetElement = this.#get_element_byfieldcode(fieldcode);
             targetElement.setAttribute(attribute_type, attribute);
             if (attribute_type === "autocomplete")
                 targetElement.setAttribute("name", attribute);
-        } catch (e)
-        {
+        } catch (e) {
             console.error(`set_attribute error\n  fieldcode=${fieldcode}\n  detail=${e}`);
         }
     }
 
-    #get_element_byfieldcode(fieldcode)
-    {
-        try
-        {
+    #get_element_byfieldcode(fieldcode) {
+        try {
             if (!fieldcode in fb.events.fields) return null;
             const textField = document.querySelector(
                 `[data-vv-name="${fieldcode}"]`
@@ -71,20 +61,17 @@ class AttributeControl
             if (textField == null) return null;
             const input_element = textField.getElementsByTagName("input")[0]; //htmlのinputタグを検索
             return input_element;
-        } catch (e)
-        {
+        } catch (e) {
             console.error(`get_element error:\n fieldcode=${fieldcode}\n detail=${e}`);
         }
     }
 
-    update_datalist(datalist_id, dataObject)
-    {
+    update_datalist(datalist_id, dataObject) {
         // dataObject = [{value:???, code:???},]
         if (document.getElementById(datalist_id)) document.getElementById(datalist_id).remove()
         const new_datalist = document.createElement("datalist");
         new_datalist.id = datalist_id;
-        dataObject.forEach((obj) =>
-        {
+        dataObject.forEach((obj) => {
             const newOption = document.createElement("option");
             newOption.value = obj.value;
             if (obj.code === "")
@@ -105,23 +92,45 @@ class AttributeControl
         new_div.style.display = "none";
         new_div.style.position = "absolute";
         new_div.style.background = "white";
-        new_div.style.border = "1px solid #ccc";
-        new_div.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.15)";
+        new_div.style.border = "1px solid #ddd"; // lighter border color
+        new_div.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)"; // softer shadow
         new_div.style.zIndex = "1000";
-        new_div.style.borderRadius = ".25em";
-    
+        new_div.style.borderRadius = "0.5em"; // more rounded corners
+        new_div.style.padding = "0.5em"; // added padding for spacing
+        new_div.style.maxHeight = "200px"; // limit height for scroll
+        new_div.style.overflowY = "auto"; // enable scrolling if content overflows
+
         dataObject.forEach((obj, index) => {
             if (!obj.value) return;
             const checkboxWrapper = document.createElement("div");
+            checkboxWrapper.style.padding = "0.25em"; // spacing between items
+            checkboxWrapper.style.display = "flex";
+            checkboxWrapper.style.alignItems = "center";
+            checkboxWrapper.style.cursor = "pointer";
+
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.id = `checkbox-${fieldcode}-${index}`;
             checkbox.value = obj.value;
+            checkbox.style.marginRight = "0.5em"; // spacing between checkbox and label
             checkbox.style.borderRadius = ".25em";
-    
+
             const label = document.createElement("label");
             label.htmlFor = checkbox.id;
             label.innerText = obj.code ? `(${obj.code}) ${obj.value}` : obj.value;
+            label.style.flex = "1"; // allow label to take remaining space
+
+            checkboxWrapper.appendChild(checkbox);
+            checkboxWrapper.appendChild(label);
+            new_div.appendChild(checkboxWrapper);
+
+            // Add hover effect
+            checkboxWrapper.addEventListener('mouseenter', () => {
+                checkboxWrapper.style.backgroundColor = "#f0f0f0";
+            });
+            checkboxWrapper.addEventListener('mouseleave', () => {
+                checkboxWrapper.style.backgroundColor = "white";
+            });
 
             checkbox.addEventListener('change', updateCheckedValues);
             label.addEventListener('click', (event) => {
@@ -130,12 +139,8 @@ class AttributeControl
                 checkbox.checked = !checkbox.checked;
                 updateCheckedValues();
             });
-    
-            checkboxWrapper.appendChild(checkbox);
-            checkboxWrapper.appendChild(label);
-            new_div.appendChild(checkboxWrapper);
         });
-    
+
         function updateCheckedValues() {
             const checkboxes = document.getElementById(fieldcode).childNodes;
             let checkedValues = []
@@ -146,20 +151,20 @@ class AttributeControl
             }
             record[fieldcode].value = checkedValues.join(', ');
         }
-    
+
         targetElement.after(new_div);
-    
-        targetElement.addEventListener('focus', function() {
+
+        targetElement.addEventListener('focus', function () {
             new_div.style.display = 'block';
         });
-    
-        document.addEventListener('click', function(event) {
+
+        document.addEventListener('click', function (event) {
             if (!targetElement.contains(event.target) && !new_div.contains(event.target)) {
                 new_div.style.display = 'none';
             }
         });
     }
-    
+
     // ドロップダウンやチェックボックスの項目以外の入力を拒否
     update_limitation(fieldcode, dataObject) {
         // dataObject = [{value:???, code:???},]
@@ -176,11 +181,11 @@ class AttributeControl
             }
             // ない場合入力文字列をクリア
             if (flag) {
-              event.target.value = "";
+                event.target.value = "";
             }
         });
     }
-    
+
     // チェックボックスにのみ有効
     update_readOnly(fieldcode) {
         const targetElement = this.#get_element_byfieldcode(fieldcode);
