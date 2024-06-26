@@ -28,7 +28,8 @@ https://cdn.jsdelivr.net/gh/kento-nkr/AttributeControl/AttributeControl.js
             placeholder: "0000000",
             inputmode: "numeric",
         },
-        性別戸籍: { autocomplete: "sex", list: "sex_select" }
+        性別戸籍: { autocomplete: "sex", list: "sex_select" },
+        管理者メールアドレス: {autocomplete: "email"}
     };
     ```
 
@@ -68,7 +69,43 @@ https://cdn.jsdelivr.net/gh/kento-nkr/AttributeControl/AttributeControl.js
     - `code`を設定した場合、プルダウンには`(code) value`の形式で表示される  
        ![image](https://github.com/kento-nkr/AttributeControl/assets/127807502/1270e678-bfca-48e3-8833-071bc39886a2)
 
+5. **動的チェックボックスの作成**
 
+    ```js
+    const checkbox_object = [
+        { value: "test1@example.com", code: "1" }, 
+        { value: "test2@example.com", code: "2" }, 
+        { value: "test3@example.com", code: "3" }, 
+        { value: "test4@example.com", code: "4" }, 
+        { value: "test5@example.com", code: "5" }, 
+    ]
+    AC.update_checkbox("管理者メールアドレス", checkbox_object)
+    ```
+
+    - インスタンス化したクラスの、`checkbox_object`メソッドを実行
+    - 第1引数: FBのfieldcode
+    - 第2引数: 設定する値。`{value: "", code: ""}`を配列にしたもの  
+    `value`は実際にinput elementに入力される値、`code`はプルダウン時にしか表示されない文字列
+    - `code`が必要ない場合は、`""`を設定すればよい。プルダウンには`value`しか表示されない
+
+        ```js
+        { value: "test1@example.com", code: "" }
+        ```
+    - `code`を設定した場合、プルダウンには`(code) value`の形式で表示される  
+       ![checkbox image](https://github.com/kento-nkr/AttributeControl/assets/141007261/3c52ef03-472f-4000-86d3-73e6b4794f4d)
+
+6. **ドロップダウン、チェックボックスの入力制限**
+
+    ```js
+    AC.update_limitation("性別戸籍")
+    AC.update_readOnly("管理者メールアドレス（レベル1）")
+    ```
+
+    - インスタンス化したクラスの、`update_limitation`メソッドもしくは、`update_readOnly`メソッドを実行
+    - 第1引数: FBのfieldcode
+    - ドロップダウン及びチェックボックスが実装されているinput elementへの入力をドロップダウンもしくはチェックボックスからの入力のみに制限できる
+    - ドロップダウンの入力制限は`update_limitation`メソッドを使用
+    - チェックボックスの入力制限は`update_limitation`メソッド（非推奨）もしくは、`update_readOnly`メソッド（推奨）を使用
 
 ## サンプルプログラム
 
@@ -93,5 +130,15 @@ https://cdn.jsdelivr.net/gh/kento-nkr/AttributeControl/AttributeControl.js
         { value: "男性", code: "1" }, 
         { value: "女性", code: "2" }
     ]
+    const checkbox_object = [
+        { value: "test1@example.com", code: "1" }, 
+        { value: "test2@example.com", code: "2" }, 
+        { value: "test3@example.com", code: "3" }, 
+        { value: "test4@example.com", code: "4" }, 
+        { value: "test5@example.com", code: "5" }, 
+    ]
     AC.update_datalist("sex_select", datalist_object)
+    AC.update_checkbox("管理者メールアドレス", checkbox_object)
+    AC.update_limitation("性別戸籍")
+    AC.update_limitation("管理者メールアドレス")
 ```
