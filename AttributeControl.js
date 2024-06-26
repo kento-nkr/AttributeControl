@@ -150,6 +150,13 @@ class AttributeControl {
                 }
             }
             record[fieldcode].value = checkedValues.join(', ');
+            const event = new Event('input', {
+                bubbles: true,
+                cancelable: true,
+            });
+            setTimeout(() => {
+                targetElement.dispatchEvent(event); // inputイベントを発生
+            }, 0);
         }
 
         targetElement.after(new_div);
